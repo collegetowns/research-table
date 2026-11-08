@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Research Table · Activity Builder</title>
+<meta name="description" content="A card-table activity builder for teaching research writing: students draft a research introduction and guess the research questions of real open-access studies.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='3' width='22' height='26' rx='3' fill='%23fbf6e9' stroke='%2317663a' stroke-width='2'/%3E%3Ctext x='16' y='22' font-size='14' text-anchor='middle' fill='%2317663a'%3E%E2%99%A3%3C/text%3E%3C/svg%3E">
+<style>
+:root{
+  --felt:#17663a; --felt-dark:#0b3a20; --felt-light:#25894f;
+  --gold:#e6c46a; --gold-dark:#a8842f; --cream:#fbf6e9; --paper:#fffdf7;
+  --ink:#1d1d1b; --muted:#5c564a; --line:#ddd3bd; --red:#b3202a;
+}
+*{box-sizing:border-box}
+[hidden]{display:none !important}
+html,body{margin:0}
+html{background:var(--felt-dark)}
+body{
+  min-height:100vh; font-family:Georgia,'Times New Roman',serif; color:var(--ink); padding-bottom:96px;
+  background:radial-gradient(ellipse at 50% 0%,var(--felt-light),var(--felt) 40%,var(--felt-dark) 100%) fixed;
+}
+a{color:var(--felt)}
+.wrap{max-width:1180px; margin:0 auto; padding:28px 16px 24px}
+
+/* header */
+.top{display:flex; gap:22px; align-items:center; color:var(--cream); margin-bottom:22px}
+.logo{flex:none; width:78px; height:78px; position:relative}
+.logo i{position:absolute; width:46px; height:64px; border-radius:6px; background:var(--paper); box-shadow:0 4px 10px rgba(0,0,0,.4);
+  display:grid; place-items:center; font-style:normal; font-size:24px; top:6px; left:16px}
+.logo i:nth-child(1){transform:rotate(-14deg) translateX(-12px); color:var(--ink)}
+.logo i:nth-child(2){transform:rotate(12deg) translateX(12px); color:var(--red)}
+.top .arc{font-size:12px; letter-spacing:.35em; text-transform:uppercase; color:var(--gold)}
+.top h1{margin:4px 0 6px; font-weight:normal; font-size:clamp(28px,4.5vw,42px)}
+.top p{margin:0; max-width:680px; font-size:16px; line-height:1.5; color:rgba(251,246,233,.88)}
+.top .demo{color:var(--gold)}
+
+.steps{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-bottom:22px}
+.steps div{background:rgba(0,0,0,.2); border:1px solid rgba(230,196,106,.4); border-radius:14px; padding:14px 16px; color:var(--cream); font-size:15px; line-height:1.45}
+.steps b{display:block; color:var(--gold); font-size:11px; letter-spacing:.3em; margin-bottom:4px; font-weight:normal}
+
+/* layout */
+.layout{display:grid; grid-template-columns:280px 1fr; gap:18px; align-items:start}
+@media (max-width:820px){ .layout{grid-template-columns:1fr} }
+.panel{background:var(--paper); border-radius:16px; box-shadow:0 10px 26px rgba(0,0,0,.35)}
+.side{padding:16px; position:sticky; top:16px}
+@media (max-width:820px){ .side{position:static} }
+.side h3{margin:4px 4px 8px; font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--felt); font-weight:normal}
+.navitem{display:flex; align-items:center; gap:10px; width:100%; text-align:left; background:none; border:0; border-radius:10px;
+  padding:9px 10px; font:15px Georgia,serif; color:var(--ink); cursor:pointer}
+.navitem:hover{background:#f3ecdb}
+.navitem.on{background:var(--felt); color:var(--cream)}
+.navitem .ic{flex:none; width:30px; height:30px; border-radius:50%; display:grid; place-items:center; border:1.3px solid currentColor; opacity:.85; font-size:15px}
+.navitem .ic svg{width:17px; height:17px; fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.navitem .nm{flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.navitem .off{font-size:11px; font-style:italic; opacity:.7}
+.sep{height:1px; background:var(--line); margin:12px 4px}
+.howto{margin-top:14px; font-size:14px; line-height:1.5; color:var(--muted)}
+.howto summary{cursor:pointer; color:var(--felt); font-size:15px}
+.howto ul{padding-left:18px; margin:8px 0}
+
+.ed{padding:clamp(18px,3vw,32px); min-height:420px}
+.ed h2{margin:0 0 4px; font-weight:normal; font-size:26px; color:var(--felt)}
+.ed .lead{margin:0 0 20px; color:var(--muted); line-height:1.5}
+.field{margin-bottom:18px}
+.field > label, .lab{display:block; font-size:12px; letter-spacing:.18em; text-transform:uppercase; color:var(--felt); margin-bottom:6px}
+.field .hint{font-size:13.5px; color:var(--muted); margin:4px 0 0; line-height:1.45}
+input[type=text], input[type=url], textarea, select{
+  width:100%; font:16px/1.5 Georgia,serif; color:var(--ink); background:#fff;
+  border:1.5px solid var(--line); border-radius:10px; padding:9px 12px;
+}
+textarea{resize:vertical}
+input:focus, textarea:focus, select:focus{outline:none; border-color:var(--gold-dark); box-shadow:0 0 0 3px rgba(230,196,106,.35)}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media (max-width:620px){ .row{grid-template-columns:1fr} }
+.check{display:flex; gap:10px; align-items:flex-start; font-size:15.5px; line-height:1.4; margin-bottom:14px; cursor:pointer}
+.check input{width:18px; height:18px; margin-top:2px; accent-color:var(--felt)}
+.count{font-size:13px; color:var(--muted); font-style:italic}
+
+.icons{display:flex; flex-wrap:wrap; gap:8px}
+.icons button{width:46px; height:46px; border-radius:50%; border:1.5px solid var(--line); background:#fff; color:var(--felt); cursor:pointer; display:grid; place-items:center}
+.icons button svg{width:24px; height:24px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.icons button:hover{border-color:var(--gold-dark)}
+.icons button.on{background:var(--felt); color:var(--gold); border-color:var(--felt)}
+
+.toolbar{display:flex; flex-wrap:wrap; gap:8px; margin-top:24px; padding-top:18px; border-top:1px dashed var(--line)}
+.credit-box{background:#f6f1e3; border-radius:12px; padding:12px 14px; font-size:14px; line-height:1.5; color:var(--muted); margin-bottom:18px}
+.alist{list-style:none; padding:0; margin:0 0 16px}
+.alist li{display:flex; align-items:center; gap:12px; padding:10px 12px; border:1px solid var(--line); border-radius:12px; margin-bottom:8px; background:#fff}
+.alist .ic{flex:none; width:38px; height:38px; border-radius:50%; display:grid; place-items:center; border:1.3px solid var(--gold-dark); color:var(--felt)}
+.alist .ic svg{width:20px; height:20px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round}
+.alist .t{flex:1; min-width:0}
+.alist .t b{display:block; font-weight:normal; font-size:16px}
+.alist .t span{font-size:13px; color:var(--muted)}
+.mini{font:13px Georgia,serif; background:none; border:1px solid var(--line); border-radius:8px; padding:5px 9px; cursor:pointer; color:var(--ink)}
+.mini:hover{border-color:var(--gold-dark)}
+
+/* buttons */
+.btn{font:bold 14px Georgia,serif; letter-spacing:.08em; cursor:pointer; border:0; border-radius:999px; padding:12px 20px; color:#3a2a06;
+  background:linear-gradient(#f6e3a6,var(--gold) 50%,var(--gold-dark)); box-shadow:0 3px 0 #6e5418, 0 6px 14px rgba(0,0,0,.3)}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translateY(2px); box-shadow:0 1px 0 #6e5418}
+.btn.ghost{background:#fff; color:var(--felt); box-shadow:inset 0 0 0 1.5px var(--felt)}
+.btn.ghost:active{transform:translateY(1px)}
+.btn.danger{background:#fff; color:var(--red); box-shadow:inset 0 0 0 1.5px var(--red)}
+.btn.full{width:100%; margin-top:6px}
+.btn.felt{background:var(--felt); color:var(--cream); box-shadow:0 3px 0 var(--felt-dark), 0 6px 14px rgba(0,0,0,.3)}
+
+/* bottom bar */
+.bar{position:fixed; left:0; right:0; bottom:0; background:rgba(11,58,32,.96); border-top:2px solid var(--gold); z-index:5}
+.bar .in{max-width:1180px; margin:0 auto; padding:12px 16px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.bar .status{flex:1; min-width:160px; color:rgba(251,246,233,.8); font-size:14px; font-style:italic}
+
+/* modals */
+.modal{position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:10; display:none; padding:16px}
+.modal.show{display:flex; flex-direction:column}
+.mhead{display:flex; justify-content:space-between; align-items:center; gap:12px; max-width:1180px; width:100%; margin:0 auto 10px; color:var(--cream)}
+.mhead h3{margin:0; font-weight:normal}
+.modal iframe{flex:1; width:100%; max-width:1180px; margin:0 auto; border:0; border-radius:14px; background:#140b05}
+#dlgModal{align-items:center; justify-content:center}
+.dlg{max-width:560px; width:100%; padding:24px 26px; line-height:1.55; max-height:90vh; overflow:auto}
+.dlg h3{margin:0 0 10px; font-weight:normal; font-size:22px; color:var(--felt)}
+.dlg ul{padding-left:22px}
+.dlg .acts{display:flex; gap:10px; justify-content:flex-end; margin-top:16px; flex-wrap:wrap}
+footer{text-align:center; color:rgba(251,246,233,.7); font-size:14px; margin-top:28px; font-style:italic}
+footer a{color:var(--gold)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="logo" aria-hidden="true"><i>♠</i><i>♥</i></div>
+    <div>
+      <div class="arc">♠ ♥ &nbsp;Activity Builder&nbsp; ♣ ♦</div>
+      <h1>The Research Table</h1>
+      <p>A card-table activity for teaching research writing. Students draw cards to draft a research introduction, then read real open-access studies and guess their research questions. Set it up for your class and download one HTML file to share. <a class="demo" href="demo.html" target="_blank" rel="noopener">Try the student version &rarr;</a></p>
+    </div>
+  </header>
+
+  <div class="steps">
+    <div><b>STEP 1</b>Set up the two activities: the decks students draw from and the articles they read. It works as is, too.</div>
+    <div><b>STEP 2</b><strong>Preview</strong> exactly what students will see, and play a hand yourself.</div>
+    <div><b>STEP 3</b><strong>Download</strong> one HTML file to post in your learning platform, Teams, or email. No account or internet needed.</div>
+  </div>
+
+  <div class="layout">
+    <aside class="panel side">
+      <h3>Activity</h3>
+      <div id="navTop"></div>
+      <div class="sep"></div>
+      <h3>Articles for activity 2</h3>
+      <div id="navArticles"></div>
+      <button class="btn ghost full" id="addArticle">+ New article</button>
+      <button class="btn ghost full" id="addStarter">+ Add a starter article</button>
+      <details class="howto">
+        <summary>How it works</summary>
+        <ul>
+          <li><b>Activity 1 · Write an Intro.</b> Teams draw an education level and a topic, then write a hook, background, problem and purpose, using your examples as models.</li>
+          <li><b>Activity 2 · Guess the Research Questions.</b> Teams pick an article, read its abstract and the passage leading up to its research questions, write their guess, and flip a card to reveal the real questions.</li>
+          <li>Both activities end with a payout ticket image students can download or print to submit.</li>
+          <li>Your setup saves automatically in this browser. To edit a finished activity later, choose <b>Open an activity</b> and select its downloaded file.</li>
+        </ul>
+        <p>Starter articles are real open-access studies reproduced under CC BY 4.0, with the citation, link and license shown to students.</p>
+        <p>Everything you enter is built into the file you download, so only use material you have the right to share.</p>
+      </details>
+    </aside>
+
+    <main class="panel ed" id="editor" aria-live="polite"></main>
+  </div>
+
+  <footer>The Research Table &middot; a <a href="https://collegetowns.org">College Towns</a> project &middot; everything runs in your browser; nothing you type is sent anywhere</footer>
+</div>
+
+<div class="bar"><div class="in">
+  <span class="status" id="status">Your setup is saved in this browser.</span>
+  <button class="btn ghost" id="openBtn">Open an activity&hellip;</button>
+  <input type="file" id="openFile" accept=".html,.htm,text/html" hidden>
+  <button class="btn ghost" id="previewBtn">Preview as a student</button>
+  <button class="btn" id="downloadBtn">Download student activity (.html)</button>
+</div></div>
+
+<div class="modal" id="previewModal" role="dialog" aria-modal="true" aria-label="Student preview">
+  <div class="mhead"><h3>Student preview <small style="opacity:.7">(nothing typed here is saved to your setup)</small></h3><button class="btn" id="closePreview">Close preview &times;</button></div>
+  <iframe id="previewFrame" title="Student activity preview"></iframe>
+</div>
+<div class="modal" id="dlgModal" role="dialog" aria-modal="true"><div class="panel dlg" id="dlg"></div></div>
+
+<script>
+/*__TEMPLATE__*/
+const DEFAULTS = /*__DEFAULTS__*/null;
+const STARTERS = /*__STARTERS__*/[];
+const ICONS = /*__ICONS__*/{};
+const ICON_NAMES = ["ai","gauge","flask","carrot","seedling","social","ball","book","school","cap","people","heart","chart","globe","laptop","phone","pencil","music"];
+const LICENSES = ["CC BY 4.0","CC BY-SA 4.0","CC BY-NC 4.0","CC BY-NC-SA 4.0","CC0 (public domain)","Other"];
+const LICENSE_URLS = {"CC BY 4.0":"https://creativecommons.org/licenses/by/4.0/","CC BY-SA 4.0":"https://creativecommons.org/licenses/by-sa/4.0/","CC BY-NC 4.0":"https://creativecommons.org/licenses/by-nc/4.0/","CC BY-NC-SA 4.0":"https://creativecommons.org/licenses/by-nc-sa/4.0/","CC0 (public domain)":"https://creativecommons.org/publicdomain/zero/1.0/"};
+const KEY = "researchTable.builder.v1";
+
+const $ = id => document.getElementById(id);
+const uid = () => Math.random().toString(36).slice(2, 10);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const svg = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${(ICONS[k] || ICONS.book).map(d => `<path d="${d}"/>`).join("")}</svg>`;
+
+function freshConfig(){ const c = clone(DEFAULTS); c.id = uid(); return c; }
+let cfg, view = "settings";
+try { cfg = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(_) {}
+if (!cfg || !cfg.a1 || !cfg.a2) cfg = freshConfig();
+
+let saveTimer;
+function save(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    try { localStorage.setItem(KEY, JSON.stringify(cfg)); $("status").textContent = "Saved in this browser."; }
+    catch(_) { $("status").textContent = "Couldn’t save in this browser — download your activity to keep it."; }
+  }, 250);
+}
+
+/* ---------- answers <-> text ---------- */
+function answersToText(ans){
+  return (ans || []).map(q => typeof q === "string" ? q : [q.q].concat((q.sub || []).map(x => "- " + x)).join("\n")).join("\n");
+}
+function textToAnswers(t){
+  const out = [];
+  String(t).split("\n").map(l => l.trim()).filter(Boolean).forEach(l => {
+    const m = l.match(/^[-–•*]\s*(.+)/);
+    if (m && out.length){
+      let last = out[out.length - 1];
+      if (typeof last === "string") last = out[out.length - 1] = {q:last, sub:[]};
+      last.sub.push(m[1]);
+    } else out.push(m ? m[1] : l.replace(/^(\(?\d+[.)]|RQ\s*\d+[:.]?)\s*/i, ""));
+  });
+  return out;
+}
+const paraText = v => (Array.isArray(v) ? v : [v || ""]).join("\n\n");
+const textParas = t => String(t).split(/\n\s*\n/).map(x => x.replace(/\s*\n\s*/g, " ").trim()).filter(Boolean);
+const lines = t => String(t).split("\n").map(x => x.trim()).filter(Boolean);
+
+/* ---------- navigation ---------- */
+function drawNav(){
+  const a1on = cfg.a1.enabled !== false, a2on = cfg.a2.enabled !== false;
+  $("navTop").innerHTML = [
+    ["settings", "♠", "Title & class name", ""],
+    ["a1", "♥", "Activity 1 · Write an Intro", a1on ? "" : "off"],
+    ["a2", "♣", "Activity 2 · Guess the RQs", a2on ? "" : "off"]
+  ].map(([k, s, n, off]) => `<button class="navitem ${view === k ? "on" : ""}" data-nav="${k}"><span class="ic">${s}</span><span class="nm">${esc(n)}</span>${off ? '<span class="off">off</span>' : ""}</button>`).join("");
+  $("navArticles").innerHTML = cfg.a2.articles.length ? cfg.a2.articles.map(a =>
+    `<button class="navitem ${view === "art:" + a.id ? "on" : ""}" data-nav="art:${a.id}"><span class="ic">${svg(a.icon)}</span><span class="nm">${esc(a.short || "Untitled article")}</span></button>`).join("")
+    : '<p style="margin:4px 6px 10px;font-size:14px;color:var(--muted);font-style:italic">No articles yet.</p>';
+  document.querySelectorAll("[data-nav]").forEach(b => b.onclick = () => go(b.dataset.nav));
+  const missing = STARTERS.filter(s => !cfg.a2.articles.some(a => a.id === s.id));
+  $("addStarter").hidden = !missing.length;
+}
+function go(v){ view = v; drawNav(); drawEditor(); if (innerWidth < 820) $("editor").scrollIntoView({behavior:"smooth"}); }
+
+/* ---------- editors ---------- */
+function drawEditor(){
+  const ed = $("editor");
+  if (view === "settings") return settingsEd(ed);
+  if (view === "a1") return a1Ed(ed);
+  if (view === "a2") return a2Ed(ed);
+  const a = cfg.a2.articles.find(x => "art:" + x.id === view);
+  if (a) return articleEd(ed, a);
+  view = "settings"; drawNav(); settingsEd(ed);
+}
+function bind(id, fn){ const el = $(id); el.addEventListener("input", () => { fn(el.type === "checkbox" ? el.checked : el.value); save(); }); el.addEventListener("change", () => { fn(el.type === "checkbox" ? el.checked : el.value); save(); if (el.type === "checkbox") drawNav(); }); }
+
+function settingsEd(ed){
+  ed.innerHTML = `
+    <h2>Title &amp; class name</h2>
+    <p class="lead">These appear at the top of the student page.</p>
+    <div class="field"><label for="fTitle">Title</label><input type="text" id="fTitle" value="${esc(cfg.title)}" maxlength="60"></div>
+    <div class="field"><label for="fSub">Line above the title</label><input type="text" id="fSub" value="${esc(cfg.subtitle)}" maxlength="60" placeholder="e.g., EDUC 501 · Research Writing Workshop"><p class="hint">A good place for your course name.</p></div>
+    <div class="toolbar"><button class="btn danger" id="resetAll">Start over with the default setup</button></div>`;
+  bind("fTitle", v => cfg.title = v);
+  bind("fSub", v => cfg.subtitle = v);
+  $("resetAll").onclick = () => dialog(`<h3>Start over?</h3><p>This replaces your current setup with the default decks, examples and starter articles. Download your activity first if you want to keep it.</p>
+    <div class="acts"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn" id="confirmReset">Start over</button></div>`,
+    () => $("confirmReset").onclick = () => { cfg = freshConfig(); save(); closeDialog(); go("settings"); });
+}
+
+function a1Ed(ed){
+  const A = cfg.a1, E = A.examples || (A.examples = {});
+  ed.innerHTML = `
+    <h2>Activity 1 · Write an Intro</h2>
+    <p class="lead">Teams draw an education level and a topic, then write the four parts of a research introduction.</p>
+    <label class="check"><input type="checkbox" id="fOn1" ${A.enabled !== false ? "checked" : ""}> Include this activity</label>
+    <div class="row">
+      <div class="field"><label for="fLevels">♠ Education level deck</label><textarea id="fLevels" rows="12">${esc((A.levels || []).join("\n"))}</textarea><p class="hint">One card per line. <span class="count" id="cLevels"></span></p></div>
+      <div class="field"><label for="fTopics">♥ Education topic deck</label><textarea id="fTopics" rows="12">${esc((A.topics || []).join("\n"))}</textarea><p class="hint">One card per line. <span class="count" id="cTopics"></span></p></div>
+    </div>
+    <label class="check"><input type="checkbox" id="fRedraw" ${A.allowRedraw !== false ? "checked" : ""}> Let teams redraw a card by clicking the deck again</label>
+    <div class="sep"></div>
+    <p class="lab" style="margin-top:16px">Example sentences students see as models</p>
+    <p class="hint" style="margin:-2px 0 14px">Leave one blank to hide its example.</p>
+    ${[["hook","♠ Hook"],["background","♥ Background"],["problem","♣ Problem"],["purpose","♦ Purpose"]].map(([k, n]) =>
+      `<div class="field"><label for="fEx_${k}">${n}</label><textarea id="fEx_${k}" rows="2">${esc(E[k] || "")}</textarea></div>`).join("")}`;
+  const cnt = () => { $("cLevels").textContent = lines($("fLevels").value).length + " cards"; $("cTopics").textContent = lines($("fTopics").value).length + " cards"; };
+  cnt();
+  bind("fOn1", v => A.enabled = v);
+  bind("fLevels", v => { A.levels = lines(v); cnt(); });
+  bind("fTopics", v => { A.topics = lines(v); cnt(); });
+  bind("fRedraw", v => A.allowRedraw = v);
+  ["hook","background","problem","purpose"].forEach(k => bind("fEx_" + k, v => E[k] = v.trim()));
+}
+
+function a2Ed(ed){
+  const list = cfg.a2.articles;
+  ed.innerHTML = `
+    <h2>Activity 2 · Guess the Research Questions</h2>
+    <p class="lead">Teams pick an article, read the abstract and the passage that leads up to its research questions, write their guess, then reveal the real questions.</p>
+    <label class="check"><input type="checkbox" id="fOn2" ${cfg.a2.enabled !== false ? "checked" : ""}> Include this activity</label>
+    <p class="lab">Articles on the table, in order</p>
+    ${list.length ? `<ul class="alist">${list.map((a, i) => `<li><span class="ic">${svg(a.icon)}</span>
+      <span class="t"><b>${esc(a.short || "Untitled article")}</b><span>${esc([a.team, a.by].filter(Boolean).join(" · "))}</span></span>
+      <button class="mini" data-up="${i}" ${i ? "" : "disabled"} aria-label="Move up">↑</button>
+      <button class="mini" data-down="${i}" ${i < list.length - 1 ? "" : "disabled"} aria-label="Move down">↓</button>
+      <button class="mini" data-edit="${a.id}">Edit</button></li>`).join("")}</ul>`
+      : '<p class="credit-box">No articles yet. Add a starter article or a new one from the left.</p>'}
+    <p class="hint">Four to six articles works well for a class of teams. Team labels are optional.</p>`;
+  bind("fOn2", v => cfg.a2.enabled = v);
+  ed.querySelectorAll("[data-up],[data-down]").forEach(b => b.onclick = () => {
+    const i = +(b.dataset.up ?? b.dataset.down), j = b.dataset.up != null ? i - 1 : i + 1;
+    [list[i], list[j]] = [list[j], list[i]]; save(); drawNav(); a2Ed(ed);
+  });
+  ed.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => go("art:" + b.dataset.edit));
+}
+
+function articleEd(ed, a){
+  const isStarter = STARTERS.some(s => s.id === a.id);
+  const licSel = LICENSES.includes(a.license) ? a.license : (a.license ? "Other" : "Other");
+  ed.innerHTML = `
+    <h2>${esc(a.short || "New article")}</h2>
+    <p class="lead">${isStarter ? "A starter article: a real open-access study. You can edit anything here; note your changes below if you do." : "Paste in a study’s abstract, the passage leading up to its research questions, and the questions themselves."}</p>
+    <div class="row">
+      <div class="field"><label for="fShort">Short title (on the card)</label><input type="text" id="fShort" value="${esc(a.short)}" maxlength="70"></div>
+      <div class="field"><label for="fTeam">Team label (optional)</label><input type="text" id="fTeam" value="${esc(a.team)}" maxlength="30" placeholder="e.g., Team 1"></div>
+    </div>
+    <div class="field"><span class="lab">Card symbol</span><div class="icons" id="icons">${ICON_NAMES.map(k => `<button type="button" data-icon="${k}" class="${a.icon === k ? "on" : ""}" aria-label="${k}" title="${k}">${svg(k)}</button>`).join("")}</div></div>
+    <div class="row">
+      <div class="field"><label for="fBy">Authors &amp; year (short)</label><input type="text" id="fBy" value="${esc(a.by)}" placeholder="e.g., Chan & Hu, 2023"></div>
+      <div class="field"><label for="fUrl">Link (DOI or article page)</label><input type="url" id="fUrl" value="${esc(a.url)}" placeholder="https://doi.org/…"></div>
+    </div>
+    <div class="field"><label for="fCite">Full citation</label><textarea id="fCite" rows="2">${esc(a.cite)}</textarea></div>
+    <div class="field"><label for="fAbs">Abstract</label><textarea id="fAbs" rows="8">${esc(paraText(a.abstract))}</textarea><p class="hint">Leave a blank line between paragraphs.</p></div>
+    <div class="field"><label for="fIT">Heading for the lead-in passage</label><input type="text" id="fIT" value="${esc(a.introTitle)}" placeholder="Introducing the research questions"></div>
+    <div class="field"><label for="fIntro">Lead-in passage</label><textarea id="fIntro" rows="8">${esc(paraText(a.intro))}</textarea><p class="hint">The paragraph(s) right before the research questions, ending where the authors are about to list them. Students see a gold blank where the questions would go.</p></div>
+    <div class="field"><label for="fRQ">The real research questions (the answer key)</label><textarea id="fRQ" rows="6">${esc(answersToText(a.answers))}</textarea><p class="hint">One question per line. Start a line with a dash (-) to make it a sub-question of the line above.</p></div>
+    <div class="row">
+      <div class="field"><label for="fLic">License</label><select id="fLic">${LICENSES.map(l => `<option ${l === licSel ? "selected" : ""}>${l}</option>`).join("")}</select></div>
+      <div class="field" id="licOtherWrap" ${licSel === "Other" ? "" : "hidden"}><label for="fLicOther">License wording</label><input type="text" id="fLicOther" value="${esc(LICENSES.includes(a.license) ? "" : a.license)}" placeholder="e.g., Used with permission"></div>
+    </div>
+    <div class="field"><label for="fNote">Note on changes (optional)</label><input type="text" id="fNote" value="${esc(a.note)}" placeholder="e.g., Lead-in shortened."><p class="hint">CC licenses ask you to say if you changed the text. This shows under the article.</p></div>
+    <div class="toolbar">
+      <button class="btn felt" id="doneArt">Done</button>
+      <button class="btn danger" id="delArt">Remove this article</button>
+    </div>`;
+  const set = (k, f) => bind(k, v => { f(v); if (k === "fShort") { ed.querySelector("h2").textContent = v || "New article"; const n = document.querySelector(`[data-nav="art:${a.id}"] .nm`); if (n) n.textContent = v || "Untitled article"; } });
+  set("fShort", v => a.short = v.trim());
+  set("fTeam", v => a.team = v.trim());
+  set("fBy", v => a.by = v.trim());
+  set("fUrl", v => a.url = v.trim());
+  set("fCite", v => a.cite = v.replace(/\s*\n\s*/g, " ").trim());
+  set("fAbs", v => a.abstract = textParas(v));
+  set("fIT", v => a.introTitle = v.trim());
+  set("fIntro", v => a.intro = textParas(v));
+  set("fRQ", v => a.answers = textToAnswers(v));
+  set("fNote", v => a.note = v.trim());
+  const setLic = () => {
+    const sel = $("fLic").value;
+    $("licOtherWrap").hidden = sel !== "Other";
+    a.license = sel === "Other" ? $("fLicOther").value.trim() : sel;
+    a.licenseUrl = LICENSE_URLS[sel] || "";
+    save();
+  };
+  $("fLic").onchange = setLic; $("fLicOther").oninput = setLic;
+  $("icons").querySelectorAll("button").forEach(b => b.onclick = () => {
+    a.icon = b.dataset.icon; $("icons").querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); save(); drawNav();
+  });
+  $("doneArt").onclick = () => go("a2");
+  $("delArt").onclick = () => dialog(`<h3>Remove “${esc(a.short || "this article")}”?</h3><p>It will be taken off the table. ${isStarter ? "You can add it back with <b>Add a starter article</b>." : "This can’t be undone."}</p>
+    <div class="acts"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn" id="confirmDel">Remove</button></div>`,
+    () => $("confirmDel").onclick = () => { cfg.a2.articles = cfg.a2.articles.filter(x => x !== a); save(); closeDialog(); go("a2"); });
+}
+
+$("addArticle").onclick = () => {
+  const a = {id:uid(), team:"Team " + (cfg.a2.articles.length + 1), icon:"book", short:"", by:"", cite:"", url:"", license:"CC BY 4.0", licenseUrl:LICENSE_URLS["CC BY 4.0"], abstract:[], introTitle:"Introducing the research questions", intro:[], answers:[], note:""};
+  cfg.a2.articles.push(a); save(); go("art:" + a.id); setTimeout(() => $("fShort").focus(), 50);
+};
+$("addStarter").onclick = () => {
+  const missing = STARTERS.filter(s => !cfg.a2.articles.some(a => a.id === s.id));
+  dialog(`<h3>Add a starter article</h3><p>Real open-access studies, reproduced under CC BY 4.0.</p>
+    <ul class="alist">${missing.map(s => `<li><span class="ic">${svg(s.icon)}</span><span class="t"><b>${esc(s.short)}</b><span>${esc(s.by)} · ${esc(s.level || "")}</span></span><button class="mini" data-add="${s.id}">Add</button></li>`).join("")}</ul>
+    <div class="acts"><button class="btn ghost" onclick="closeDialog()">Close</button></div>`,
+    () => document.querySelectorAll("[data-add]").forEach(b => b.onclick = () => {
+      cfg.a2.articles.push(clone(STARTERS.find(s => s.id === b.dataset.add))); save(); closeDialog(); go("a2");
+    }));
+};
+
+/* ---------- dialogs ---------- */
+function dialog(html, after){ $("dlg").innerHTML = html; $("dlgModal").classList.add("show"); if (after) after(); const f = $("dlg").querySelector("button:last-child"); if (f) f.focus(); }
+function closeDialog(){ $("dlgModal").classList.remove("show"); }
+$("dlgModal").addEventListener("click", e => { if (e.target.id === "dlgModal") closeDialog(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape"){ closeDialog(); closePreview(); } });
+
+/* ---------- build ---------- */
+function templateHTML(){ return new TextDecoder().decode(Uint8Array.from(atob(TEMPLATE_B64), c => c.charCodeAt(0))); }
+function buildStudentHTML(c){
+  const json = JSON.stringify(c).replace(/</g, "\\u003c").replace(/\u2028/g, "\\u2028").replace(/\u2029/g, "\\u2029");
+  return templateHTML().replace("/*__CONFIG__*/null", () => "/*CFG-START*/" + json + "/*CFG-END*/");
+}
+function problems(){
+  const p = [], A1 = cfg.a1, A2 = cfg.a2;
+  const on1 = A1.enabled !== false, on2 = A2.enabled !== false;
+  if (!on1 && !on2) p.push("Both activities are turned off. Turn on at least one.");
+  if (on1 && !(A1.levels || []).length) p.push("Activity 1 needs at least one education level card.");
+  if (on1 && !(A1.topics || []).length) p.push("Activity 1 needs at least one topic card.");
+  if (on2 && !A2.articles.length) p.push("Activity 2 has no articles. Add one, or turn the activity off.");
+  if (on2) A2.articles.forEach((a, i) => {
+    const n = a.short || ("Article " + (i + 1));
+    if (!a.short) p.push(`Article ${i + 1} needs a short title.`);
+    if (!(a.answers || []).length) p.push(`“${n}” needs at least one research question.`);
+    if (!(a.abstract || []).length && !(a.intro || []).length) p.push(`“${n}” needs an abstract or a lead-in passage for students to read.`);
+  });
+  return p;
+}
+function precheck(fn){
+  const p = problems();
+  if (!p.length) return fn();
+  dialog(`<h3>A few things to finish first</h3><ul>${p.map(x => `<li>${esc(x)}</li>`).join("")}</ul><div class="acts"><button class="btn" onclick="closeDialog()">OK</button></div>`);
+}
+function closePreview(){ $("previewModal").classList.remove("show"); $("previewFrame").srcdoc = ""; }
+$("previewBtn").onclick = () => precheck(() => {
+  const c = clone(cfg); c.id = cfg.id + "-preview";
+  $("previewFrame").srcdoc = buildStudentHTML(c);
+  $("previewModal").classList.add("show");
+});
+$("closePreview").onclick = closePreview;
+
+$("downloadBtn").onclick = () => precheck(() => {
+  const html = buildStudentHTML(cfg);
+  const base = (cfg.title || "research-table").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "research-table";
+  const name = base + "-activity.html";
+  const url = URL.createObjectURL(new Blob([html], {type:"text/html"}));
+  const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+  const kb = Math.round(html.length / 1024);
+  dialog(`<h3>Your activity is downloaded</h3><p>Look for <b>${esc(name)}</b> (${kb} KB) in your downloads.</p>
+    <ul><li><b>Learning platform</b> (Brightspace, Canvas, Moodle…): upload it as a file in your course. Students click it to open it in their browser.</li>
+    <li><b>Teams or email</b>: share the file. Students download it and open it in Chrome, Edge, Safari or Firefox.</li>
+    <li>It works offline, and each student’s writing stays on their own device.</li>
+    <li>To change it later, come back here and choose <b>Open an activity</b>.</li></ul>
+    <div class="acts"><button class="btn" onclick="closeDialog()">Done</button></div>`);
+});
+
+$("openBtn").onclick = () => $("openFile").click();
+$("openFile").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = ""; if (!f) return;
+  const t = await f.text();
+  const m = t.match(/\/\*CFG-START\*\/([\s\S]*?)\/\*CFG-END\*\//);
+  let c = null; try { c = m && JSON.parse(m[1]); } catch(_) {}
+  if (!c || !c.a1 || !c.a2){ dialog(`<h3>That file can’t be opened here</h3><p>Choose an activity file that was downloaded from this builder.</p><div class="acts"><button class="btn" onclick="closeDialog()">OK</button></div>`); return; }
+  dialog(`<h3>Open “${esc(f.name)}”?</h3><p>This replaces the setup you have here now.</p><div class="acts"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn" id="confirmOpen">Open it</button></div>`,
+    () => $("confirmOpen").onclick = () => { cfg = c; if (!cfg.id) cfg.id = uid(); save(); closeDialog(); go("settings"); $("status").textContent = "Opened " + f.name + "."; });
+};
+
+drawNav(); drawEditor();
+</script>
+</body>
+</html>
