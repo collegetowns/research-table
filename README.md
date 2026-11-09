@@ -40,6 +40,6 @@ New activities start with four starter articles taken from real open-access stud
 | After-school STEM clubs | Blanchard, M. R., Gutierrez, K. S., Swanson, K. J., & Collier, K. M. (2023). Why do students attend STEM clubs, what do they get out of it, and where are they heading? *Education Sciences, 13*(5), 480. https://doi.org/10.3390/educsci13050480 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | School gardens | Hellinger, F., Benkowitz, D., & Lindemann-Matthies, P. (2022). Do radishes and carrots grow in a bunch? Students' knowledge about the growth of food plants and their ideas of a school garden design. *Education Sciences, 12*(5), 299. https://doi.org/10.3390/educsci12050299 | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 
-Abstracts, lead-in passages and research questions are reproduced as published. Each lead-in is the passage immediately before the article's research questions; short card titles were added.
+Abstracts, lead-in passages and research questions are reproduced as published, except that the Chan & Hu lead-in was shortened (cuts are marked with … and noted under the article). Each lead-in is the passage immediately before the article's research questions; short card titles were added.
 
 Only include material you have the right to share; everything entered is embedded in the downloaded file.
