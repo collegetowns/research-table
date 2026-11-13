@@ -168,7 +168,7 @@ footer a{color:var(--gold)}
     <main class="panel ed" id="editor" aria-live="polite"></main>
   </div>
 
-  <footer>The Research Table &middot; a <a href="https://collegetowns.org">College Towns</a> project &middot; everything runs in your browser; nothing you type is sent anywhere</footer>
+  <footer>The Research Table &middot; a <a href="https://collegetowns.org">College Towns</a> project &middot; More free apps in the <a href="https://applocker.collegetowns.org/" target="_blank" rel="noopener">College Towns App Locker</a> &middot; everything runs in your browser; nothing you type is sent anywhere</footer>
 </div>
 
 <div class="bar"><div class="in">
@@ -464,6 +464,10 @@ $("openFile").onchange = async e => {
 };
 
 drawNav(); drawEditor();
+/* Keep the footer clear of the fixed button bar, which is taller on phones */
+(function(){ const bar=document.querySelector('.bar'); if(!bar) return;
+  const fit=()=>{ document.body.style.paddingBottom=(bar.offsetHeight+20)+'px'; };
+  addEventListener('resize', fit); fit(); })();
 </script>
 </body>
 </html>
