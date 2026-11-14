@@ -125,6 +125,9 @@ input:focus, textarea:focus, select:focus{outline:none; border-color:var(--gold-
 footer{text-align:center; color:rgba(251,246,233,.7); font-size:14px; margin-top:28px; font-style:italic}
 footer a{color:var(--gold)}
 </style>
+<!-- Private visitor counter (GoatCounter). Only the account owner can see the dashboard. -->
+<script>window.goatcounter = { path: function(p){ return location.host + p } };</script>
+<script data-goatcounter="https://collegetowns.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </head>
 <body>
 <div class="wrap">
@@ -168,7 +171,7 @@ footer a{color:var(--gold)}
     <main class="panel ed" id="editor" aria-live="polite"></main>
   </div>
 
-  <footer>The Research Table &middot; a <a href="https://collegetowns.org">College Towns</a> project &middot; everything runs in your browser; nothing you type is sent anywhere</footer>
+  <footer>The Research Table &middot; a <a href="https://collegetowns.org">College Towns</a> project &middot; More free apps in the <a href="https://applocker.collegetowns.org/" target="_blank" rel="noopener">College Towns App Locker</a> &middot; everything runs in your browser; nothing you type is sent anywhere</footer>
 </div>
 
 <div class="bar"><div class="in">
@@ -452,6 +455,14 @@ $("downloadBtn").onclick = () => precheck(() => {
     <div class="acts"><button class="btn" onclick="closeDialog()">Done</button></div>`);
 });
 
+/* An opened file is checked before use: ids and symbols must be the plain kind this builder makes */
+function tidy(c){
+  const okId = v => typeof v === "string" && /^[A-Za-z0-9_-]{1,60}$/.test(v);
+  if (!okId(c.id)) c.id = uid();
+  c.a2.articles = (Array.isArray(c.a2.articles) ? c.a2.articles : []).filter(a => a && typeof a === "object");
+  c.a2.articles.forEach(a => { if (!okId(a.id)) a.id = uid(); if (!ICONS[a.icon]) a.icon = "book"; });
+  return c;
+}
 $("openBtn").onclick = () => $("openFile").click();
 $("openFile").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
@@ -460,10 +471,14 @@ $("openFile").onchange = async e => {
   let c = null; try { c = m && JSON.parse(m[1]); } catch(_) {}
   if (!c || !c.a1 || !c.a2){ dialog(`<h3>That file can’t be opened here</h3><p>Choose an activity file that was downloaded from this builder.</p><div class="acts"><button class="btn" onclick="closeDialog()">OK</button></div>`); return; }
   dialog(`<h3>Open “${esc(f.name)}”?</h3><p>This replaces the setup you have here now.</p><div class="acts"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn" id="confirmOpen">Open it</button></div>`,
-    () => $("confirmOpen").onclick = () => { cfg = c; if (!cfg.id) cfg.id = uid(); save(); closeDialog(); go("settings"); $("status").textContent = "Opened " + f.name + "."; });
+    () => $("confirmOpen").onclick = () => { cfg = tidy(c); save(); closeDialog(); go("settings"); $("status").textContent = "Opened " + f.name + "."; });
 };
 
 drawNav(); drawEditor();
+/* Keep the footer clear of the fixed button bar, which is taller on phones */
+(function(){ const bar=document.querySelector('.bar'); if(!bar) return;
+  const fit=()=>{ document.body.style.paddingBottom=(bar.offsetHeight+20)+'px'; };
+  addEventListener('resize', fit); fit(); })();
 </script>
 </body>
 </html>

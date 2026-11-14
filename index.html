@@ -455,6 +455,14 @@ $("downloadBtn").onclick = () => precheck(() => {
     <div class="acts"><button class="btn" onclick="closeDialog()">Done</button></div>`);
 });
 
+/* An opened file is checked before use: ids and symbols must be the plain kind this builder makes */
+function tidy(c){
+  const okId = v => typeof v === "string" && /^[A-Za-z0-9_-]{1,60}$/.test(v);
+  if (!okId(c.id)) c.id = uid();
+  c.a2.articles = (Array.isArray(c.a2.articles) ? c.a2.articles : []).filter(a => a && typeof a === "object");
+  c.a2.articles.forEach(a => { if (!okId(a.id)) a.id = uid(); if (!ICONS[a.icon]) a.icon = "book"; });
+  return c;
+}
 $("openBtn").onclick = () => $("openFile").click();
 $("openFile").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;
@@ -463,7 +471,7 @@ $("openFile").onchange = async e => {
   let c = null; try { c = m && JSON.parse(m[1]); } catch(_) {}
   if (!c || !c.a1 || !c.a2){ dialog(`<h3>That file can’t be opened here</h3><p>Choose an activity file that was downloaded from this builder.</p><div class="acts"><button class="btn" onclick="closeDialog()">OK</button></div>`); return; }
   dialog(`<h3>Open “${esc(f.name)}”?</h3><p>This replaces the setup you have here now.</p><div class="acts"><button class="btn ghost" onclick="closeDialog()">Cancel</button><button class="btn" id="confirmOpen">Open it</button></div>`,
-    () => $("confirmOpen").onclick = () => { cfg = c; if (!cfg.id) cfg.id = uid(); save(); closeDialog(); go("settings"); $("status").textContent = "Opened " + f.name + "."; });
+    () => $("confirmOpen").onclick = () => { cfg = tidy(c); save(); closeDialog(); go("settings"); $("status").textContent = "Opened " + f.name + "."; });
 };
 
 drawNav(); drawEditor();
